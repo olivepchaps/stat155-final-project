@@ -1,0 +1,63 @@
+---
+title: "Final Project"
+subtitle: "STAT 155"
+date: now
+author: "Olive Pilling Chappelear, Jamie Soutter, Adam Chilbert"
+date-format: "YYYY-MM-DDTHH:mm:ssZ"
+format: html
+editor: visual
+---
+
+# \[Title\]
+
+Olive Pilling Chappelear, Jamie Soutter, Adam Chilbert
+
+```{r}
+#setup
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+```
+
+## Introduction
+
+Research context
+
+Research question
+
+Research importance / consequences
+
+## Data and Exploratory Data Analysis
+
+```{r}
+
+```
+
+Data introduction / background\
+Table 1\
+2-4 data visualizations
+
+## Methods
+
+Final statistical model (method not results)\
+Process for final model selection\
+Hypotheses test information (method not results)
+
+## Results
+
+Table of coefficients\
+Model message\
+Coefficient discussion\
+Model evaluation\
+Hypothesis test results
+
+## Conclusion
+
+Final conclusions\
+Implications\
+Limitations\
+Ethical considerations
+
+## References
+
+Include 2+ references and cite these in the paper.
