@@ -17,6 +17,8 @@ Olive Pilling Chappelear, Jamie Soutter, Adam Chilbert
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
+
+pulse <- read.csv("pulse_of_the_nation_processed.csv")
 ```
 
 ## Introduction
