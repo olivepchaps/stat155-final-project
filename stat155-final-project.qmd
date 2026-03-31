@@ -27,6 +27,12 @@ Research context
 
 Research question
 
+-   What are the best predictors of whether someone approves of Trump?
+
+-   Can we make a model that can accurately predict whether someone will approve of Trump?
+
+-   What confounding variables are there in the relationship between these seemingly silly and arbitrary questions and these serious, real world outcomes?
+
 Research importance / consequences
 
 ## Data and Exploratory Data Analysis
