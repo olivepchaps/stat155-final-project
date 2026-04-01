@@ -13,12 +13,36 @@ editor: visual
 Olive Pilling Chappelear, Jamie Soutter, Adam Chilbert
 
 ```{r}
-#setup
+#run once to use mosaic plots
+install.packages("devtools")
+devtools::install_github("haleyjeppson/ggmosaic")
+```
+
+```{r}
+#load packages
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
+library(ggmosaic)
 
+#import survey data
 pulse <- read.csv("pulse_of_the_nation_processed.csv")
+
+#set indicators manually to make visualizations more readable... there has to be a better way to do this
+#trump approval
+pulse$trump_approval <- factor(pulse$trump_approval, 
+                         levels = c("Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve"),
+                         labels = c(0, 1, 2, 3, 4))
+
+#science is honest
+pulse$science_is_honest <- factor(pulse$science_is_honest, 
+                         levels = c("Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve"),
+                         labels = c(0, 1, 2, 3, 4))
+
+#vaccines are safe
+pulse$vaccines_are_safe <- factor(pulse$vaccines_are_safe, 
+                         levels = c("Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve"),
+                         labels = c(0, 1, 2, 3, 4))
 ```
 
 ## Introduction
@@ -38,7 +62,25 @@ Research importance / consequences
 ## Data and Exploratory Data Analysis
 
 ```{r}
+#Trump - Do you approve, disapprove, or neither approve nor disapprove of how Donald Trump is handling his job as president? 
 
+#by income
+pulse %>%
+  ggplot(aes(x = income, y = trump_approval)) +
+  geom_boxplot()
+
+trump_mod1 <- glm(trump_approval ~ income, family = "binomial", data = pulse)
+summary(trump_mod1)
+exp(coef(summary(trump_mod1)))
+```
+
+```{r}
+#Robots - What would you say is the likelihood that your current job will be entirely performed by robots or computers within the next decade?
+
+#by transformer movies watched
+pulse %>%
+  ggplot() +
+  geom_mosaic(aes(x = transformers, fill = robots))
 ```
 
 Data introduction / background\
