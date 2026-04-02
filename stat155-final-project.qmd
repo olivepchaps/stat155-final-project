@@ -30,19 +30,13 @@ pulse <- read.csv("pulse_of_the_nation_processed.csv")
 
 #set indicators manually to make visualizations more readable... there has to be a better way to do this
 #trump approval
-pulse$trump_approval <- factor(pulse$trump_approval, 
-                         levels = c("Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve"),
-                         labels = c(0, 1, 2, 3, 4))
+pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve")
 
 #science is honest
-pulse$science_is_honest <- factor(pulse$science_is_honest, 
-                         levels = c("Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve"),
-                         labels = c(0, 1, 2, 3, 4))
+pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve")
 
 #vaccines are safe
-pulse$vaccines_are_safe <- factor(pulse$vaccines_are_safe, 
-                         levels = c("Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve"),
-                         labels = c(0, 1, 2, 3, 4))
+pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve")
 ```
 
 ## Introduction
