@@ -14,8 +14,8 @@ Olive Pilling Chappelear, Jamie Soutter, Adam Chilbert
 
 ```{r}
 #run once to use mosaic plots
-install.packages("devtools")
-devtools::install_github("haleyjeppson/ggmosaic")
+#install.packages("devtools")
+#devtools::install_github("haleyjeppson/ggmosaic")
 ```
 
 ```{r}
@@ -37,6 +37,8 @@ pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove",
 
 #vaccines are safe
 pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve")
+
+
 ```
 
 ## Introduction
