@@ -33,12 +33,30 @@ pulse <- read.csv("pulse_of_the_nation_processed.csv")
 pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve")
 
 #science is honest
-pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve")
+pulse$science_is_honest <- fct_relevel(pulse$science_is_honest, "Strongly Disagree", "Somewhat Disagree", "Neither Agree nor Disagree", "Somewhat Agree", "Strongly Agree")
 
 #vaccines are safe
-pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve")
+pulse$vaccines_are_safe <- fct_relevel(pulse$vaccines_are_safe, "Strongly Disagree", "Somewhat Disagree", "Neither Agree nor Disagree", "Somewhat Agree", "Strongly Agree")
 
+# fed sci budget
+pulse$fed_sci_budget <- fct_relevel(pulse$fed_sci_budget, "Too High", "About Right", "Too Low")
 
+#create numeric versions of factors
+#fed sci budget
+pulse$fed_sci_budget_numeric <- pulse$fed_sci_budget
+levels(pulse$fed_sci_budget_numeric) <- c(-1, 0, 1)
+
+#trump approval
+pulse$trump_approval_numeric <- pulse$trump_approval
+levels(pulse$trump_approval_numeric) <- c(-2, -1, 0, 1, 2)
+
+#science is honest
+pulse$science_is_honest_numeric <- pulse$science_is_honest
+levels(pulse$science_is_honest_numeric) <- c(-2, -1, 0, 1, 2)
+
+#vaccines are safe
+pulse$vaccines_are_safe_numeric <- pulse$vaccines_are_safe
+levels(pulse$vaccines_are_safe_numeric) <- c(-2, -1, 0, 1, 2)
 ```
 
 ## Introduction
@@ -82,6 +100,17 @@ pulse %>%
 Data introduction / background\
 Table 1\
 2-4 data visualizations
+
+```{r}
+pulse %>% 
+  ggplot(aes(x = gender, fill = ghosts)) +
+  geom_bar(position = "fill")
+```
+
+```{r}
+pulse %>% 
+  ggplot()
+```
 
 ## Methods
 
