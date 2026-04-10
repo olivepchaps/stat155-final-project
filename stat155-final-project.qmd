@@ -143,7 +143,28 @@ pulse %>%
 pulse %>% 
   ggplot(aes(x = party, y = science_support)) +
   geom_boxplot() +
-  labs(title = "Support for Science by Gender Identity", x = "Party", y = "Science support")
+  labs(title = "Support for Science by Political Party", x = "Party", y = "Science support")
+```
+
+```{r}
+pulse %>% 
+  ggplot(aes(x = science_support, fill = party)) +
+  geom_histogram(binwidth = 1, color = "black")
+
+
+```
+
+```{r}
+pulse %>% 
+  ggplot(aes(x = transformers, y = science_support)) +
+  geom_smooth(method = "lm", se = FALSE)
+
+```
+
+```{r}
+pulse %>% 
+  filter(trump_approval_numeric > 0) %>% 
+  count()
 ```
 
 ## Methods
