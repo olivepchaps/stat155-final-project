@@ -69,6 +69,14 @@ pulse$vaccines_are_safe_numeric <- as.numeric(as.character(pulse$vaccines_are_sa
 #combine science related variables to create trust in science score
 pulse$science_support <- pulse$fed_sci_budget_numeric + pulse$science_is_honest_numeric + pulse$vaccines_are_safe_numeric
 
+#create factored version of science support variable
+pulse <- pulse %>% 
+  mutate(science_support_factored = case_when(
+    (science_support < -1) ~ "Low Support",
+    (science_support > 1) ~ "High Support",
+    .default = "Neutral"
+    ))
+pulse$science_support_factored <- fct_relevel(pulse$science_support_factored, "Low Support", "Neutral", "High Support")
 
 ```
 
@@ -242,6 +250,14 @@ pulse %>%
   filter(trump_approval_numeric > 0) %>% 
   count()
   labs(title = "Support for Science by Party Affiliation", x = "Party", y = "Science support")
+```
+
+```{r}
+pulse %>% 
+  ggplot(aes(x = education, fill = science_support_factored)) +
+  geom_bar(position = "fill", color = "black") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Education", y = "", fill = "Support for science", title = "Support for Science by Level of Education")
 ```
 
 ## Methods
