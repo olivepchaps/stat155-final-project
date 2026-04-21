@@ -68,6 +68,8 @@ pulse$vaccines_are_safe_numeric <- as.numeric(as.character(pulse$vaccines_are_sa
 
 #combine science related variables to create trust in science score
 pulse$science_support <- pulse$fed_sci_budget_numeric + pulse$science_is_honest_numeric + pulse$vaccines_are_safe_numeric
+
+
 ```
 
 ## Introduction
@@ -114,6 +116,14 @@ pulse %>%
   geom_bar(color = "black", position = "fill") +
   scale_y_continuous(labels = scales::percent) +
   labs(x = "Gender identity", y = "", fill = "Believe in ghosts", title = "Belief in Ghosts by Gender Identity")
+```
+
+```{r}
+pulse %>% 
+  ggplot(aes(x = vaccines_are_safe_numeric, fill = fed_sci_budget)) +
+  geom_bar(color = "black", position = "fill") + 
+  scale_y_continuous(labels = scales::percent) +
+  labs()
 ```
 
 ```{r}
@@ -165,6 +175,9 @@ pulse %>%
 pulse %>% 
   filter(trump_approval_numeric > 0) %>% 
   count()
+=======
+  labs(title = "Support for Science by Party Affiliation", x = "Party", y = "Science support")
+>>>>>>> Stashed changes
 ```
 
 ## Methods
