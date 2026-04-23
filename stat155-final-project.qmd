@@ -169,6 +169,16 @@ exp(coef(summary(trump_mod1)))
 trump_mod2 <- glm(trump_approval ~ income * science_support, family = "binomial", data = pulse)
 summary(trump_mod2)
 exp(coef(trump_mod2))
+
+trump_mod3 <- glm(trump_approval ~ income + science_support, family = "binomial", data = pulse)
+summary(trump_mod3)
+exp(coef(trump_mod3))
+
+anova(trump_mod3, trump_mod2)
+
+trump_mod4 <- glm(trump_approval ~ income * science_support + education, family = "binomial", data = pulse)
+summary(trump_mod4)
+exp(coef(trump_mod4))
 ```
 
 ```{r}
