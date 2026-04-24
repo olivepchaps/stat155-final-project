@@ -1,0 +1,163 @@
+---
+title: "Final Project"
+subtitle: "STAT 155"
+date: now
+author: "Olive Pilling Chappelear, Jamie Soutter, Adam Chilbert"
+date-format: "YYYY-MM-DDTHH:mm:ssZ"
+format: html
+editor: visual
+---
+
+## Setup
+
+```{r}
+#run once to use mosaic plots
+#install.packages("devtools")
+#devtools::install_github("haleyjeppson/ggmosaic")
+```
+
+```{r}
+#colorblind friendly palette
+cb_palette <- c("black", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+scale_colour_discrete <- function(...) scale_colour_manual(values = cb_palette, ...)
+scale_fill_discrete   <- function(...) scale_fill_manual(values = cb_palette, ...)
+theme_set(theme_bw())
+```
+
+```{r}
+#load packages
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(ggmosaic)
+
+#import survey data
+pulse <- read.csv("pulse_of_the_nation_processed.csv")
+
+#set indicators manually
+#trump approval
+pulse$trump_approval <- fct_relevel(pulse$trump_approval, "Strongly disapprove", "Somewhat disapprove", "Neither approve nor disapprove", "Somewhat Approve", "Strongly Approve")
+
+#science is honest
+pulse$science_is_honest <- fct_relevel(pulse$science_is_honest, "Strongly Disagree", "Somewhat Disagree", "Neither Agree nor Disagree", "Somewhat Agree", "Strongly Agree")
+
+#vaccines are safe
+pulse$vaccines_are_safe <- fct_relevel(pulse$vaccines_are_safe, "Strongly Disagree", "Somewhat Disagree", "Neither Agree nor Disagree", "Somewhat Agree", "Strongly Agree")
+
+# fed sci budget
+pulse$fed_sci_budget <- fct_relevel(pulse$fed_sci_budget, "Too High", "About Right", "Too Low")
+
+#create numeric versions of factors
+#fed sci budget
+pulse$fed_sci_budget_numeric <- pulse$fed_sci_budget
+levels(pulse$fed_sci_budget_numeric) <- c(-1, 0, 1)
+pulse$fed_sci_budget_numeric <- as.numeric(as.character(pulse$fed_sci_budget_numeric))
+
+#trump approval
+pulse$trump_approval_numeric <- pulse$trump_approval
+levels(pulse$trump_approval_numeric) <- c(-2, -1, 0, 1, 2)
+pulse$trump_approval_numeric <- as.numeric(as.character(pulse$trump_approval_numeric))
+
+#science is honest
+pulse$science_is_honest_numeric <- pulse$science_is_honest
+levels(pulse$science_is_honest_numeric) <- c(-2, -1, 0, 1, 2)
+pulse$science_is_honest_numeric <- as.numeric(as.character(pulse$science_is_honest_numeric))
+
+#vaccines are safe
+pulse$vaccines_are_safe_numeric <- pulse$vaccines_are_safe
+levels(pulse$vaccines_are_safe_numeric) <- c(-2, -1, 0, 1, 2)
+pulse$vaccines_are_safe_numeric <- as.numeric(as.character(pulse$vaccines_are_safe_numeric))
+
+#combine science related variables to create trust in science score
+pulse$science_support <- pulse$fed_sci_budget_numeric + pulse$science_is_honest_numeric + pulse$vaccines_are_safe_numeric
+
+#create factored version of science support variable
+pulse <- pulse %>% 
+  mutate(science_support_factored = case_when(
+    (science_support < -1) ~ "Low Support",
+    (science_support > 1) ~ "High Support",
+    .default = "Neutral"
+    ))
+pulse$science_support_factored <- fct_relevel(pulse$science_support_factored, "Low Support", "Neutral", "High Support")
+
+```
+
+## Numerical summaries
+
+```{r}
+#counts
+count(pulse, education)
+count(pulse, science_is_honest)
+count(pulse, vaccines_are_safe)
+count(pulse, fed_sci_budget)
+count(pulse, trump_approval)
+```
+
+```{r}
+#income numerical summaries
+pulse %>% 
+  summarise(mean = mean(income), 
+            sd = sd(income), 
+            min = min(income), 
+            max = max(income), 
+            quantile(income, c(.25, .5, .75)))
+```
+
+```{r}
+#Trump - Do you approve, disapprove, or neither approve nor disapprove of how Donald Trump is handling his job as president? 
+
+#by income
+pulse %>%
+  ggplot(aes(x = income, y = trump_approval)) +
+  geom_boxplot() +
+  labs(x = "Income (thousands USD)", 
+       y = "Trump approval",
+        title = "Trump Approval vs Income")
+
+#by science support
+pulse %>%
+  ggplot(aes(x = science_support, fill = trump_approval)) +
+  geom_bar(position = "fill") +
+  labs(x = "Science support", 
+       y = "Relative frequency", 
+       fill = "Trump approval", 
+       title = "Trump Approval vs Science Support")
+
+#by income and science support
+pulse %>%
+  ggplot(aes(x = income, y = science_support_factored, color = trump_approval)) +
+  geom_boxplot() +
+  labs(x = "Income (thousands USD)",
+       y = "Science support",
+       color = "Trump approval",
+       title = "Trump Approval vs Income and Science Support")
+
+#confounder: education
+
+```
+
+```{r}
+#logistic regression models of Trump approval
+#income
+trump_mod1 <- glm(trump_approval ~ income, family = "binomial", data = pulse)
+summary(trump_mod1)
+exp(coef(summary(trump_mod1)))
+
+#income * science support
+trump_mod2 <- glm(trump_approval ~ income * science_support, family = "binomial", data = pulse)
+summary(trump_mod2)
+exp(coef(trump_mod2))
+
+#income + science support
+trump_mod3 <- glm(trump_approval ~ income + science_support, family = "binomial", data = pulse)
+summary(trump_mod3)
+exp(coef(trump_mod3))
+
+#is the model with the effect modifier significantly stronger than without?
+anova(trump_mod3, trump_mod2) #p = 2.491e-07, so yes!
+
+#TODO income * science support + education
+trump_mod4 <- glm(trump_approval ~ income * science_support + education, family = "binomial", data = pulse)
+summary(trump_mod4)
+exp(coef(trump_mod4))
+```
