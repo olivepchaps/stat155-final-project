@@ -78,6 +78,25 @@ pulse <- pulse %>%
     ))
 pulse$science_support_factored <- fct_relevel(pulse$science_support_factored, "Low Support", "Neutral", "High Support")
 
+#create binary degree variable
+pulse$degree <- pulse$education
+levels(pulse$degree) <- c("2", "1", "0", "-1", "-2")
+pulse$degree <- fct_recode(pulse$degree, "2" = "Graduate degree",
+                           "1" = "College degree",
+                           "0" = "Some college",
+                           "-1" = "High school",
+                           "-2" = "Other")
+pulse$degree <- as.numeric(as.character(pulse$degree))
+pulse <- pulse %>% 
+  mutate(degree = case_when(
+  (degree <= 0) ~ "No",
+    (degree > 0) ~ "Yes",
+    ))
+
+```
+
+```{r}
+str(pulse)
 ```
 
 ## Introduction
@@ -97,21 +116,6 @@ Research importance / consequences
 ## Data and Exploratory Data Analysis
 
 ```{r}
-#counts
-count(pulse, education)
-count(pulse, science_is_honest)
-count(pulse, vaccines_are_safe)
-count(pulse, fed_sci_budget)
-count(pulse, trump_approval)
-```
-
-```{r}
-#income numerical summaries
-pulse %>% 
-  summarise(mean = mean(income), sd = sd(income), min = min(income), max = max(income), quantile(income, c(.25, .5, .75)))
-```
-
-```{r}
 #mean, to get a sense of overall trend
 pulse %>% 
   summarise(mean = mean(trump_approval_numeric))
@@ -125,7 +129,6 @@ pulse %>%
   ggplot(aes(x = trump_approval_numeric)) +
   geom_bar() +
   labs(x = "Trump Approval", y = "Count")
-
 ```
 
 Although the mean is not typically useful for categorical variables, in this scenario it does help explain the overall trend: people, on average, are slightly more likely to disapprove of Trump than approve of him. The table of counts provides further detail on this: generally, people who do not approve of trump strongly disapprove, and many fewer people feel neutral or somewhat disapprove. The distribution is bimodal, with significantly more people on the ends of the approval spectrum than in the middle, which reflects the trend of political polarization currently happening in this country.
