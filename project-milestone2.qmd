@@ -17,6 +17,14 @@ editor: visual
 ```
 
 ```{r}
+#load packages
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(ggmosaic)
+```
+
+```{r}
 #colorblind friendly palette
 cb_palette <- c("black", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 scale_colour_discrete <- function(...) scale_colour_manual(values = cb_palette, ...)
@@ -25,12 +33,6 @@ theme_set(theme_bw())
 ```
 
 ```{r}
-#load packages
-library(dplyr)
-library(ggplot2)
-library(tidyverse)
-library(ggmosaic)
-
 #import survey data
 pulse <- read.csv("pulse_of_the_nation_processed.csv")
 
@@ -117,6 +119,8 @@ pulse %>%
             quantile(income, c(.25, .5, .75)))
 ```
 
+## Visualizations
+
 ```{r}
 #Trump - Do you approve, disapprove, or neither approve nor disapprove of how Donald Trump is handling his job as president? 
 
@@ -127,7 +131,9 @@ pulse %>%
   labs(x = "Income (thousands USD)", 
        y = "Trump approval",
         title = "Trump Approval vs Income")
+```
 
+```{r}
 #by science support
 pulse %>%
   ggplot(aes(x = science_support, fill = trump_approval)) +
@@ -136,7 +142,9 @@ pulse %>%
        y = "Relative frequency", 
        fill = "Trump approval", 
        title = "Trump Approval vs Science Support")
+```
 
+```{r}
 #by income and science support
 pulse %>%
   ggplot(aes(x = income, y = science_support_factored, color = trump_approval)) +
@@ -145,15 +153,9 @@ pulse %>%
        y = "Science support",
        color = "Trump approval",
        title = "Trump Approval vs Income and Science Support")
-
-pulse %>%
-  ggplot(aes(x = income, y = trump_approval, color = science_support_factored)) +
-  geom_boxplot() +
-  labs(x = "Income (thousands USD)",
-       y = "Science support",
-       color = "Trump approval",
-       title = "Trump Approval vs Income and Science Support")
 ```
+
+## Models
 
 ```{r}
 #logistic regression models of Trump approval
@@ -162,6 +164,10 @@ trump_mod1 <- glm(trump_approval ~ income, family = "binomial", data = pulse)
 summary(trump_mod1)
 exp(coef(summary(trump_mod1)))
 ```
+
+$$
+E[trumpapproval|income, sciencesupport, degree] = \beta_0 + \beta_1income
+$$
 
 ```{r}
 #income + science support
@@ -173,6 +179,10 @@ exp(coef(trump_mod2))
 anova(trump_mod1, trump_mod2)
 ```
 
+$$
+E[trumpapproval|income, sciencesupport, degree] = \beta_0 + \beta_1income + \beta_2sciencesupport
+$$
+
 ```{r}
 #income * science support
 trump_mod3 <- glm(trump_approval ~ income * science_support, family = "binomial", data = pulse)
@@ -183,6 +193,10 @@ exp(coef(trump_mod3))
 anova(trump_mod2, trump_mod3) #p = 2.491e-07, so yes!
 ```
 
+$$
+E[trumpapproval|income, sciencesupport, degree] = \beta_0 + \beta_1income + \beta_2sciencesupport + \beta_3income*sciencesupport
+$$
+
 ```{r}
 #income * science support + degree
 trump_mod4 <- glm(trump_approval ~ income * science_support + degree, family = "binomial", data = pulse)
@@ -192,3 +206,7 @@ exp(coef(trump_mod4))
 #does controlling for college degree make the model significantly stronger?
 anova(trump_mod2, trump_mod4)
 ```
+
+$$
+E[trumpapproval|income, sciencesupport, degree] = \beta_0 + \beta_1income + \beta_2sciencesupport + \beta_3income*sciencesupport + \beta_4degree
+$$
