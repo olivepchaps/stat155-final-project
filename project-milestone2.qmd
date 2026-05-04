@@ -146,8 +146,13 @@ pulse %>%
        color = "Trump approval",
        title = "Trump Approval vs Income and Science Support")
 
-#confounder: education
-
+pulse %>%
+  ggplot(aes(x = income, y = trump_approval, color = science_support_factored)) +
+  geom_boxplot() +
+  labs(x = "Income (thousands USD)",
+       y = "Science support",
+       color = "Trump approval",
+       title = "Trump Approval vs Income and Science Support")
 ```
 
 ```{r}
@@ -156,20 +161,29 @@ pulse %>%
 trump_mod1 <- glm(trump_approval ~ income, family = "binomial", data = pulse)
 summary(trump_mod1)
 exp(coef(summary(trump_mod1)))
+```
 
-#income * science support
-trump_mod2 <- glm(trump_approval ~ income * science_support, family = "binomial", data = pulse)
+```{r}
+#income + science support
+trump_mod2 <- glm(trump_approval ~ income + science_support, family = "binomial", data = pulse)
 summary(trump_mod2)
 exp(coef(trump_mod2))
 
-#income + science support
-trump_mod3 <- glm(trump_approval ~ income + science_support, family = "binomial", data = pulse)
+#does controlling for science support make the model significantly stronger?
+anova(trump_mod1, trump_mod2)
+```
+
+```{r}
+#income * science support
+trump_mod3 <- glm(trump_approval ~ income * science_support, family = "binomial", data = pulse)
 summary(trump_mod3)
 exp(coef(trump_mod3))
 
 #is the model with the effect modifier significantly stronger than without?
-anova(trump_mod3, trump_mod2) #p = 2.491e-07, so yes!
+anova(trump_mod2, trump_mod3) #p = 2.491e-07, so yes!
+```
 
+```{r}
 #income * science support + degree
 trump_mod4 <- glm(trump_approval ~ income * science_support + degree, family = "binomial", data = pulse)
 summary(trump_mod4)
