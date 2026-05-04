@@ -60,6 +60,10 @@ pulse$trump_approval_numeric <- pulse$trump_approval
 levels(pulse$trump_approval_numeric) <- c(-2, -1, 0, 1, 2)
 pulse$trump_approval_numeric <- as.numeric(as.character(pulse$trump_approval_numeric))
 
+#trump approval, binary
+pulse <- pulse %>%
+  mutate(trump_approval_binary = trump_approval_numeric > 0)
+
 #science is honest
 pulse$science_is_honest_numeric <- pulse$science_is_honest
 levels(pulse$science_is_honest_numeric) <- c(-2, -1, 0, 1, 2)
