@@ -159,6 +159,45 @@ pulse %>%
        title = "Trump Approval vs Income and Science Support")
 ```
 
+# Alternative Visualizations
+
+```{r}
+pulse %>% 
+  ggplot(aes(x = income, fill = trump_approval_binary)) +
+  geom_density(alpha = 0.5) +
+  labs(x = "Income", y = "Density", fill = "Approve of Trump", title = "Income Distribution by Trump Approval")
+```
+
+```{r}
+pulse %>%
+  ggplot(aes(x = science_support, fill = trump_approval_binary)) +
+  geom_bar(position = "fill") +
+  labs(x = "Science support", 
+       y = "Relative frequency", 
+       fill = "Approve of Trump", 
+       title = "Trump Approval by Support for Science")
+```
+
+```{r}
+pulse %>%
+  ggplot(aes(x = science_support_factored, fill = trump_approval_binary)) +
+  geom_bar(position = "fill") +
+  labs(x = "Science support", 
+       y = "Relative frequency", 
+       fill = "Approve of Trump", 
+       title = "Trump Approval by Support for Science")
+```
+
+```{r}
+pulse %>%
+  ggplot(aes(x = income, y = trump_approval_binary, color = science_support_factored)) +
+  geom_boxplot() +
+  labs(x = "Income (thousands USD)",
+       y = "Approve of Trump",
+       color = "Science support",
+       title = "Trump Approval by Income and Support for Science")
+```
+
 ## Models
 
 ```{r}
