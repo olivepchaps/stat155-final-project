@@ -25,10 +25,7 @@ library(ggmosaic)
 ```
 
 ```{r}
-#colorblind friendly palette
-cb_palette <- c("black", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-scale_colour_discrete <- function(...) scale_colour_manual(values = cb_palette, ...)
-scale_fill_discrete   <- function(...) scale_fill_manual(values = cb_palette, ...)
+#set visuals
 theme_set(theme_bw())
 ```
 
@@ -198,6 +195,15 @@ pulse %>%
 ```
 
 ```{r}
+#v1
+pulse %>%
+  ggplot(aes(x = income, y = science_support_factored, color = trump_approval_binary)) +
+  geom_boxplot() +
+  labs(x = "Income (thousands USD)",
+       y = "Science support",
+       color = "Approve of Trump",
+       title = "Trump Approval by Income and Support for Science")
+#v2, axes switched
 pulse %>%
   ggplot(aes(x = income, y = trump_approval_binary, color = science_support_factored)) +
   geom_boxplot() +
@@ -217,10 +223,6 @@ summary(trump_mod1)
 exp(coef(summary(trump_mod1)))
 ```
 
-$$
-E[trumpapproval|income, sciencesupport, degree] = \beta_0 + \beta_1income
-$$
-
 ```{r}
 #income + science support
 trump_mod2 <- glm(trump_approval_binary ~ income + science_support, family = "binomial", data = pulse)
@@ -231,10 +233,6 @@ exp(coef(trump_mod2))
 anova(trump_mod1, trump_mod2)
 ```
 
-$$
-E[trumpapproval|income, sciencesupport, degree] = \beta_0 + \beta_1income + \beta_2sciencesupport
-$$
-
 ```{r}
 #income * science support
 trump_mod3 <- glm(trump_approval_binary ~ income * science_support, family = "binomial", data = pulse)
@@ -244,10 +242,6 @@ exp(coef(trump_mod3))
 #is the model with the effect modifier significantly stronger than without?
 anova(trump_mod2, trump_mod3) #p = 2.491e-07, so yes!
 ```
-
-$$
-E[trumpapproval|income, sciencesupport, degree] = \beta_0 + \beta_1income + \beta_2sciencesupport + \beta_3income*sciencesupport
-$$
 
 ```{r}
 #income * science support + degree
@@ -264,13 +258,24 @@ $$
 log(Odds(Trump\,Approval|Income, Science\,Support, Degree)) = \beta_0 + \beta_1Income + \beta_2Science\,Support + \beta_3Income*Science\,Support + \beta_4Degree
 $$
 
+## Evaluation
+
+```{r}
+threshold <- .5
+
+pulse <- pulse %>% 
+  mutate(predicted_approve = predict.glm(trump_mod4, newdata = pulse, type = "response") >= threshold)
+
+#confusion matrix
+pulse %>% 
+  count(trump_approval_binary, predicted_approve)
+```
+
 ```{r}
 pulse %>% 
   summarise(mean = mean(science_support), 
             sd = sd(science_support), 
             min = min(science_support), 
             max = max(science_support), 
-            quantile(science_support, c(.25)),
-            quantile(science_support, c(.5)),
-            quantile(science_support, c(.75)))
+            quantile(science_support, c(.25, .5, .75)))
 ```
