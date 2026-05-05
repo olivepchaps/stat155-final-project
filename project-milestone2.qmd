@@ -164,7 +164,7 @@ pulse %>%
 ```{r}
 #logistic regression models of Trump approval
 #income
-trump_mod1 <- glm(trump_approval ~ income, family = "binomial", data = pulse)
+trump_mod1 <- glm(trump_approval_binary ~ income, family = "binomial", data = pulse)
 summary(trump_mod1)
 exp(coef(summary(trump_mod1)))
 ```
@@ -175,7 +175,7 @@ $$
 
 ```{r}
 #income + science support
-trump_mod2 <- glm(trump_approval ~ income + science_support, family = "binomial", data = pulse)
+trump_mod2 <- glm(trump_approval_binary ~ income + science_support, family = "binomial", data = pulse)
 summary(trump_mod2)
 exp(coef(trump_mod2))
 
@@ -189,7 +189,7 @@ $$
 
 ```{r}
 #income * science support
-trump_mod3 <- glm(trump_approval ~ income * science_support, family = "binomial", data = pulse)
+trump_mod3 <- glm(trump_approval_binary ~ income * science_support, family = "binomial", data = pulse)
 summary(trump_mod3)
 exp(coef(trump_mod3))
 
@@ -203,14 +203,15 @@ $$
 
 ```{r}
 #income * science support + degree
-trump_mod4 <- glm(trump_approval ~ income * science_support + degree, family = "binomial", data = pulse)
+trump_mod4 <- glm(trump_approval_binary ~ income * science_support + degree, family = "binomial", data = pulse)
 summary(trump_mod4)
 exp(coef(trump_mod4))
 
 #does controlling for college degree make the model significantly stronger?
 anova(trump_mod2, trump_mod4)
+exp(0.000712)
 ```
 
 $$
-E[trumpapproval|income, sciencesupport, degree] = \beta_0 + \beta_1income + \beta_2sciencesupport + \beta_3income*sciencesupport + \beta_4degree
+log(Odds(Trump\,Approval|Income, Science\,Support, Degree)) = \beta_0 + \beta_1Income + \beta_2Science\,Support + \beta_3Income*Science\,Support + \beta_4Degree
 $$
