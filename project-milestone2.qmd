@@ -145,7 +145,7 @@ pulse %>%
   labs(x = "Science support", 
        y = "Relative frequency", 
        fill = "Trump approval", 
-       title = "Trump Approval vs Science Support")
+       title = "Trump Approval by Science Support")
 ```
 
 ```{r}
@@ -166,6 +166,15 @@ pulse %>%
   ggplot(aes(x = income, fill = trump_approval_binary)) +
   geom_density(alpha = 0.5) +
   labs(x = "Income", y = "Density", fill = "Approve of Trump", title = "Income Distribution by Trump Approval")
+```
+
+```{r}
+pulse %>%
+  ggplot(aes(x = income, y = trump_approval_binary)) +
+  geom_boxplot() +
+  labs(x = "Income (thousands USD)", 
+       y = "Approve of Trump",
+        title = "Income by Trump Approval")
 ```
 
 ```{r}
@@ -254,3 +263,14 @@ exp(0.000712)
 $$
 log(Odds(Trump\,Approval|Income, Science\,Support, Degree)) = \beta_0 + \beta_1Income + \beta_2Science\,Support + \beta_3Income*Science\,Support + \beta_4Degree
 $$
+
+```{r}
+pulse %>% 
+  summarise(mean = mean(science_support), 
+            sd = sd(science_support), 
+            min = min(science_support), 
+            max = max(science_support), 
+            quantile(science_support, c(.25)),
+            quantile(science_support, c(.5)),
+            quantile(science_support, c(.75)))
+```
